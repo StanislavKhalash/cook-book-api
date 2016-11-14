@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookBookAPI", "CookBookAPI\CookBookAPI.csproj", "{D0E30E72-D1AD-4581-A212-8C9FC62653EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookBookAPI.Tests", "CookBookAPI.Tests\CookBookAPI.Tests.csproj", "{FB7865AB-FC50-413F-9BA4-B86B45FD2221}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookBookAPI.Data", "CookBookAPI.Data\CookBookAPI.Data.csproj", "{E11370C4-AED5-403C-A8E8-79C8C47A1FE4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookBookAPI.Domain", "CookBookAPI.Domain\CookBookAPI.Domain.csproj", "{7887A93E-0344-4287-9720-36DCE2342488}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookBookAPI.Domain.Tests", "CookBookAPI.Domain.Tests\CookBookAPI.Domain.Tests.csproj", "{00D8F2C9-C872-4314-866B-79732984A54E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D0E30E72-D1AD-4581-A212-8C9FC62653EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0E30E72-D1AD-4581-A212-8C9FC62653EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0E30E72-D1AD-4581-A212-8C9FC62653EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0E30E72-D1AD-4581-A212-8C9FC62653EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB7865AB-FC50-413F-9BA4-B86B45FD2221}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB7865AB-FC50-413F-9BA4-B86B45FD2221}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB7865AB-FC50-413F-9BA4-B86B45FD2221}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB7865AB-FC50-413F-9BA4-B86B45FD2221}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E11370C4-AED5-403C-A8E8-79C8C47A1FE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E11370C4-AED5-403C-A8E8-79C8C47A1FE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E11370C4-AED5-403C-A8E8-79C8C47A1FE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E11370C4-AED5-403C-A8E8-79C8C47A1FE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7887A93E-0344-4287-9720-36DCE2342488}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7887A93E-0344-4287-9720-36DCE2342488}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7887A93E-0344-4287-9720-36DCE2342488}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7887A93E-0344-4287-9720-36DCE2342488}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00D8F2C9-C872-4314-866B-79732984A54E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00D8F2C9-C872-4314-866B-79732984A54E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00D8F2C9-C872-4314-866B-79732984A54E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00D8F2C9-C872-4314-866B-79732984A54E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
