@@ -1,22 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Results;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Web.Http.Routing;
 
 using Moq;
 using CookBookAPI.Controllers;
 using CookBookAPI.Domain;
-using System.Web.Http.Routing;
+using NUnit.Framework;
 
 namespace CookBookAPI.Tests.Controllers
 {
-    [TestClass]
-    public class FoodsControllerTest
+    [TestFixture]
+    public class FoodsControllerFixture
     {
-        [TestMethod]
+        [Test]
         public void Get_ShouldReturnAllFoundFoods()
         {
             var foods = new List<Food>
@@ -35,7 +34,7 @@ namespace CookBookAPI.Tests.Controllers
             CollectionAssert.AreEqual(foods, result);
         }
 
-        [TestMethod]
+        [Test]
         public void GetById_FoodDoesntExist_ShouldReturnNotFound()
         {
             var foodRepositoryStub = new Mock<IFoodRepository>(MockBehavior.Strict);
@@ -49,7 +48,7 @@ namespace CookBookAPI.Tests.Controllers
             Assert.IsNotNull(typedResult);
         }
 
-        [TestMethod]
+        [Test]
         public void GetById_FoodExists_ShouldReturnFoundFood()
         {
             var foodId = 1;
@@ -66,7 +65,7 @@ namespace CookBookAPI.Tests.Controllers
             Assert.AreSame(food, typedResult.Content);
         }
 
-        [TestMethod]
+        [Test]
         public void Post_CreationFails_ShouldReturnBadRequest()
         {
             var foodRepositoryStub = new Mock<IFoodRepository>(MockBehavior.Strict);
@@ -79,7 +78,7 @@ namespace CookBookAPI.Tests.Controllers
             Assert.IsNotNull(typedResult);
         }
 
-        [TestMethod]
+        [Test]
         public void Post_CreationSucceeds_ShouldReturnCreatedFood()
         {
             var food = new Food { Description = "Pork, Fried", Calories = 250 };
@@ -102,7 +101,7 @@ namespace CookBookAPI.Tests.Controllers
             Assert.AreSame(food, typedResult.Content);
         }
 
-        [TestMethod]
+        [Test]
         public void Post_CreationSucceeds_ShouldReturnCreatedFoodLocation()
         {
             var food = new Food { Description = "Pork, Fried", Calories = 250 };

@@ -1,13 +1,14 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+
+using NUnit.Framework;
 
 namespace CookBookAPI.Domain.Tests
 {
-    [TestClass]
-    public class RecipeTest
+    [TestFixture]
+    public class RecipeFixture
     {
-        [TestMethod]
+        [Test]
         public void IsVegetarian_AllIngredientsShouldBeVegetarian()
         {
             var sut = new Recipe();
@@ -35,7 +36,7 @@ namespace CookBookAPI.Domain.Tests
             Assert.IsTrue(sut.IsVegetarian());
         }
 
-        [TestMethod]
+        [Test]
         public void IsNotVegetarian_AtLeastOneIngredientsShouldBeNotVegetarian()
         {
             var sut = new Recipe();
@@ -63,7 +64,7 @@ namespace CookBookAPI.Domain.Tests
             Assert.IsFalse(sut.IsVegetarian());
         }
 
-        [TestMethod]
+        [Test]
         public void GetTotalCalories_ShouldReturnComponentsTotalCalories()
         {
             var sut = new Recipe();
