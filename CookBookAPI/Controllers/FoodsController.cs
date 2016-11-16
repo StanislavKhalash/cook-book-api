@@ -1,11 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 using CookBookAPI.Domain;
-using System;
-using System.Web.Http.Routing;
 
 namespace CookBookAPI.Controllers
 {
@@ -18,14 +15,14 @@ namespace CookBookAPI.Controllers
             _foodRepository = foodRepository;
         }
 
-        public IEnumerable<Food> Get()
+        public async Task<IEnumerable<Food>> GetAsync()
         {
-            return _foodRepository.GetAll().ToList();
+            return await _foodRepository.GetAllAsync();
         }
 
-        public IHttpActionResult Get(int foodId)
+        public async Task<IHttpActionResult> GetAsync(int foodId)
         {
-            var food = _foodRepository.FindById(foodId);
+            var food = await _foodRepository.FindByIdAsync(foodId);
             if(food != null)
             {
                 return Ok(food);
@@ -36,24 +33,34 @@ namespace CookBookAPI.Controllers
             }
         }
 
-        public IHttpActionResult Post([FromBody]Food food)
+        public async Task<IHttpActionResult> PostAsync([FromBody]Food food)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            var duplicate = await _foodRepository.FindByDescriptionAsync(food.Description);
+            if (duplicate != null)
+            {
+                return Conflict();
+            }
+
+            _foodRepository.Create(food);
+
             try
             {
-                int foodId = _foodRepository.Create(food);
-                var createdFoodLocation = Url.Link("Food", new { foodId = foodId });
-
-                return Created(createdFoodLocation, food);
+                await _foodRepository.SaveChangedAsync();
             }
             catch (RepositoryException)
             {
                 return BadRequest();
             }
+
+            var newFood = await _foodRepository.FindByDescriptionAsync(food.Description);
+            var newFoodLocation = Url.Link("Food", new { foodId = newFood.Id });
+
+            return Created(newFoodLocation, food);
         }
     }
 }

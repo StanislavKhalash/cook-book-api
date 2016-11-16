@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
 using System.Web.Http.Routing;
@@ -16,7 +17,7 @@ namespace CookBookAPI.Tests.Controllers
     public class FoodsControllerFixture
     {
         [Test]
-        public void Get_ShouldReturnAllFoundFoods()
+        public async Task Get_ShouldReturnAllFoundFoods()
         {
             var foods = new List<Food>
             {
@@ -25,67 +26,85 @@ namespace CookBookAPI.Tests.Controllers
             };
 
             var foodRepositoryStub = new Mock<IFoodRepository>(MockBehavior.Strict);
-            foodRepositoryStub.Setup(obj => obj.GetAll()).Returns(foods.AsQueryable());
+            foodRepositoryStub.Setup(obj => obj.GetAllAsync()).ReturnsAsync(foods);
 
             FoodsController controller = new FoodsController(foodRepositoryStub.Object);
 
-            var result = controller.Get().ToList();
+            var result = await controller.GetAsync();
 
-            CollectionAssert.AreEqual(foods, result);
+            CollectionAssert.AreEqual(foods, result.ToList());
         }
 
         [Test]
-        public void GetById_FoodDoesntExist_ShouldReturnNotFound()
+        public async Task GetById_FoodDoesntExist_ShouldReturnNotFound()
         {
             var foodRepositoryStub = new Mock<IFoodRepository>(MockBehavior.Strict);
-            foodRepositoryStub.Setup(obj => obj.FindById(It.IsAny<int>())).Returns<Food>(null);
+            foodRepositoryStub.Setup(obj => obj.FindByIdAsync(It.IsAny<int>())).ReturnsAsync((Food)null);
 
             FoodsController controller = new FoodsController(foodRepositoryStub.Object);
 
             int foodId = 1;
-            var typedResult = controller.Get(foodId) as NotFoundResult;
+            var typedResult = await controller.GetAsync(foodId) as NotFoundResult;
 
             Assert.IsNotNull(typedResult);
         }
 
         [Test]
-        public void GetById_FoodExists_ShouldReturnFoundFood()
+        public async Task GetById_FoodExists_ShouldReturnFoundFood()
         {
             var foodId = 1;
             var food = new Food { Id = foodId, Description = "Beef, Fried" };
 
             var foodRepositoryStub = new Mock<IFoodRepository>(MockBehavior.Strict);
-            foodRepositoryStub.Setup(obj => obj.FindById(foodId)).Returns(food);
-
+            foodRepositoryStub.Setup(obj => obj.FindByIdAsync(foodId)).ReturnsAsync(food);
+            foodRepositoryStub.Setup(obj => obj.SaveChangedAsync());
             FoodsController controller = new FoodsController(foodRepositoryStub.Object);
 
-            var typedResult = controller.Get(foodId) as OkNegotiatedContentResult<Food>;
+            var typedResult = await controller.GetAsync(foodId) as OkNegotiatedContentResult<Food>;
 
             Assert.IsNotNull(typedResult);
             Assert.AreSame(food, typedResult.Content);
         }
 
         [Test]
-        public void Post_CreationFails_ShouldReturnBadRequest()
+        public async Task Post_CreatingDuplicate_ShouldReturnConflict()
         {
             var foodRepositoryStub = new Mock<IFoodRepository>(MockBehavior.Strict);
-            foodRepositoryStub.Setup(obj => obj.Create(It.IsAny<Food>())).Throws<RepositoryException>();
+            foodRepositoryStub.Setup(obj => obj.FindByDescriptionAsync(It.IsAny<string>())).ReturnsAsync(new Food());
 
             FoodsController controller = new FoodsController(foodRepositoryStub.Object);
 
-            var typedResult = controller.Post(new Food()) as BadRequestResult;
+            var typedResult = await controller.PostAsync(new Food()) as ConflictResult;
 
             Assert.IsNotNull(typedResult);
         }
 
         [Test]
-        public void Post_CreationSucceeds_ShouldReturnCreatedFood()
+        public async Task Post_CreationFails_ShouldReturnBadRequest()
+        { 
+            var foodRepositoryStub = new Mock<IFoodRepository>(MockBehavior.Strict);
+            foodRepositoryStub.Setup(obj => obj.FindByDescriptionAsync(It.IsAny<string>())).ReturnsAsync((Food)null);
+            foodRepositoryStub.Setup(obj => obj.Create(It.IsAny<Food>()));
+            foodRepositoryStub.Setup(obj => obj.SaveChangedAsync()).Throws<RepositoryException>();
+
+            FoodsController controller = new FoodsController(foodRepositoryStub.Object);
+
+            var typedResult = await controller.PostAsync(new Food()) as BadRequestResult;
+
+            Assert.IsNotNull(typedResult);
+        }
+
+        [Test]
+        public async Task Post_CreationSucceeds_ShouldReturnCreatedFood()
         {
             var food = new Food { Description = "Pork, Fried", Calories = 250 };
 
-            int generatedId = 1;
             var foodRepositoryStub = new Mock<IFoodRepository>(MockBehavior.Strict);
-            foodRepositoryStub.Setup(obj => obj.Create(food)).Returns(generatedId);
+            foodRepositoryStub.SetupSequence(obj => obj.FindByDescriptionAsync(It.IsAny<string>()))
+                .ReturnsAsync(null)
+                .ReturnsAsync(new Food { Id = 1, Description = "Pork, Fried", Calories = 250 });
+            foodRepositoryStub.Setup(obj => obj.Create(food));
+            foodRepositoryStub.Setup(obj => obj.SaveChangedAsync()).Returns(Task.CompletedTask);
 
             var urlHelperStub = new Mock<UrlHelper>();
             urlHelperStub.Setup(obj => obj.Link(It.IsAny<string>(), It.IsAny<object>())).Returns(string.Empty);
@@ -93,22 +112,24 @@ namespace CookBookAPI.Tests.Controllers
             FoodsController controller = new FoodsController(foodRepositoryStub.Object);
             controller.Url = urlHelperStub.Object;
 
-            var typedResult = controller.Post(food) as CreatedNegotiatedContentResult<Food>;
+            var typedResult = await controller.PostAsync(food) as CreatedNegotiatedContentResult<Food>;
             
             Assert.IsNotNull(typedResult);
 
-            food.Id = generatedId;
             Assert.AreSame(food, typedResult.Content);
         }
 
         [Test]
-        public void Post_CreationSucceeds_ShouldReturnCreatedFoodLocation()
+        public async Task Post_CreationSucceeds_ShouldReturnCreatedFoodLocation()
         {
             var food = new Food { Description = "Pork, Fried", Calories = 250 };
 
-            int generatedId = 1;
             var foodRepositoryStub = new Mock<IFoodRepository>(MockBehavior.Strict);
-            foodRepositoryStub.Setup(obj => obj.Create(food)).Returns(generatedId);
+            foodRepositoryStub.SetupSequence(obj => obj.FindByDescriptionAsync(It.IsAny<string>()))
+                .ReturnsAsync(null)
+                .ReturnsAsync(new Food { Id = 1, Description = "Pork, Fried", Calories = 250 });
+            foodRepositoryStub.Setup(obj => obj.Create(food));
+            foodRepositoryStub.Setup(obj => obj.SaveChangedAsync()).Returns(Task.CompletedTask);
 
             var locationUrl = "http://location/";
             var urlHelperStub = new Mock<UrlHelper>(MockBehavior.Strict);
@@ -119,7 +140,7 @@ namespace CookBookAPI.Tests.Controllers
             controller.Configuration = new HttpConfiguration();
             controller.Url = urlHelperStub.Object;
 
-            var typedResult = controller.Post(food) as CreatedNegotiatedContentResult<Food>;
+            var typedResult = await controller.PostAsync(food) as CreatedNegotiatedContentResult<Food>;
 
             Assert.AreSame(locationUrl, typedResult.Location.AbsoluteUri);
         }

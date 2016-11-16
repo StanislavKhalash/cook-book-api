@@ -1,15 +1,21 @@
 ﻿using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CookBookAPI.Domain
 {
     public interface IFoodRepository
     {
-        IQueryable<Food> GetAll();
+        Task<IEnumerable<Food>> GetAllAsync();
 
-        Food FindById(int foodId);
+        Task<Food> FindByIdAsync(int foodId);
 
-        int Create(Food food);
+        Task<Food> FindByDescriptionAsync(string description);
+
+        void Create(Food food);
 
         void Delete(Food food);
+
+        Task SaveChangedAsync();
     }
 }
