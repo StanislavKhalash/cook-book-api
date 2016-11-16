@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 using NUnit.Framework;
+using Ploeh.AutoFixture;
 
 namespace CookBookAPI.Domain.Tests
 {
@@ -11,27 +12,11 @@ namespace CookBookAPI.Domain.Tests
         [Test]
         public void IsVegetarian_AllIngredientsShouldBeVegetarian()
         {
-            var sut = new Recipe();
-            sut.Ingredients = new List<Ingredient>
-            {
-                new Ingredient
-                {
-                    Food = new Food
-                    {
-                        Description = "Apple, Raw",
-                        IsVegetarian = true
-                    }
-                },
+            Fixture fixture = new Fixture();
+            fixture.Customize(VeggieFoodCustomization());
 
-                new Ingredient
-                {
-                    Food = new Food
-                    {
-                        Description = "Pear, Raw",
-                        IsVegetarian = true
-                    }
-                }
-            };
+            var sut = new Recipe();
+            sut.Ingredients = fixture.CreateMany<Ingredient>().ToList();
 
             Assert.IsTrue(sut.IsVegetarian());
         }
@@ -39,27 +24,14 @@ namespace CookBookAPI.Domain.Tests
         [Test]
         public void IsNotVegetarian_AtLeastOneIngredientsShouldBeNotVegetarian()
         {
-            var sut = new Recipe();
-            sut.Ingredients = new List<Ingredient>
-            {
-                new Ingredient
-                {
-                    Food = new Food
-                    {
-                        Description = "Beef, Fried",
-                        IsVegetarian = false
-                    }
-                },
+            Fixture fixture = new Fixture();
+            fixture.Customize(VeggieFoodCustomization());
 
-                new Ingredient
-                {
-                    Food = new Food
-                    {
-                        Description = "Pear, Raw",
-                        IsVegetarian = true
-                    }
-                }
-            };
+            var sut = new Recipe();
+            sut.Ingredients = fixture.CreateMany<Ingredient>().ToList();
+
+            fixture.Customize(NonVeggieFoodCustomization());
+            sut.Ingredients.Add(fixture.Create<Ingredient>());
 
             Assert.IsFalse(sut.IsVegetarian());
         }
@@ -67,32 +39,40 @@ namespace CookBookAPI.Domain.Tests
         [Test]
         public void GetTotalCalories_ShouldReturnComponentsTotalCalories()
         {
+            Fixture fixture = new Fixture();
+
             var sut = new Recipe();
-            sut.Ingredients = new List<Ingredient>
-            {
-                new Ingredient
-                {
-                    Food = new Food
-                    {
-                        Description = "Beef, Fried",
-                        Calories = 200
-                    }
-                },
+            sut.Ingredients = fixture.CreateMany<Ingredient>().ToList();
 
-                new Ingredient
-                {
-                    Food = new Food
-                    {
-                        Description = "Pear, Raw",
-                        Calories = 20
-                    }
-                }
-            };
-
-            var expectedTotal = 220;
+            var expectedTotal = sut.Ingredients.Sum(i => i.Food.Calories);
             var actualTotal = sut.GetTotalCalories();
 
             Assert.AreEqual(expectedTotal, actualTotal);
+        }
+
+        private class FoodCustomization : ICustomization
+        {
+            private readonly bool _isVeggie;
+
+            public FoodCustomization(bool isVeggie)
+            {
+                _isVeggie = isVeggie;
+            }
+
+            public void Customize(IFixture fixture)
+            {
+                fixture.Customize<Food>(c => c.With(f => f.IsVegetarian, _isVeggie));
+            }
+        }
+
+        private static FoodCustomization VeggieFoodCustomization()
+        {
+            return new FoodCustomization(true);
+        }
+
+        private static FoodCustomization NonVeggieFoodCustomization()
+        {
+            return new FoodCustomization(false);
         }
     }
 }
