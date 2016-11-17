@@ -232,6 +232,7 @@
     <Compile Include="Controllers\RecipesController.cs" />
     <Compile Include="Filters\BasicHttpAuthenticationAttribute.cs" />
     <Compile Include="Filters\RequireHttpsAttribute.cs" />
+    <Compile Include="Filters\ValidateModelStateAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

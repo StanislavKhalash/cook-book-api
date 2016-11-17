@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 
 using CookBookAPI.Domain;
+using CookBookAPI.Filters;
 
 namespace CookBookAPI.Controllers
 {
@@ -33,13 +34,9 @@ namespace CookBookAPI.Controllers
             }
         }
 
+        [ValidateModelState]
         public async Task<IHttpActionResult> PostAsync([FromBody]Food food)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var duplicate = await _foodRepository.FindByDescriptionAsync(food.Description);
             if (duplicate != null)
             {

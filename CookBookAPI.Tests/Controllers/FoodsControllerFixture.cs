@@ -59,6 +59,7 @@ namespace CookBookAPI.Tests.Controllers
             var foodRepositoryStub = new Mock<IFoodRepository>(MockBehavior.Strict);
             foodRepositoryStub.Setup(obj => obj.FindByIdAsync(foodId)).ReturnsAsync(food);
             foodRepositoryStub.Setup(obj => obj.SaveChangedAsync());
+
             FoodsController controller = new FoodsController(foodRepositoryStub.Object);
 
             var typedResult = await controller.GetAsync(foodId) as OkNegotiatedContentResult<Food>;
