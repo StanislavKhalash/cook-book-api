@@ -6,50 +6,50 @@ namespace CookBookAPI.Data
 {
     public static class DomainEntityFactory
     {
-        public static Food Create(FoodDto foodDto)
+        public static Food Create(DbFood dbFood)
         {
             return new Food
             {
-                Id = foodDto.Id,
-                Description = foodDto.Description,
-                Carbonates = foodDto.Carbonates,
-                Fats = foodDto.Fats,
-                Proteins = foodDto.Proteins,
-                Calories = foodDto.Calories,
-                IsVegetarian = foodDto.IsVegetarian
+                Id = dbFood.Id,
+                Description = dbFood.Description,
+                Carbonates = dbFood.Carbonates,
+                Fats = dbFood.Fats,
+                Proteins = dbFood.Proteins,
+                Calories = dbFood.Calories,
+                IsVegetarian = dbFood.IsVegetarian
             };
         }
 
-        public static Ingredient Create(IngredientDto ingredientDto)
+        public static Ingredient Create(DbIngredient dbIngredient)
         {
             return new Ingredient
             {
-                Id = ingredientDto.Id,
-                Food = Create(ingredientDto.Food),
-                Amount = ingredientDto.Amount
+                Id = dbIngredient.Id,
+                Food = Create(dbIngredient.Food),
+                Amount = dbIngredient.Amount
             };
         }
 
-        public static Recipe Create(RecipeDto recipeDto)
+        public static Recipe Create(DbRecipe dbRecipe)
         {
             return new Recipe
             {
-                Id = recipeDto.Id,
-                Description = recipeDto.Description,
-                Ingredients = recipeDto.Ingredients.Select(Create).ToList()
+                Id = dbRecipe.Id,
+                Description = dbRecipe.Description,
+                Ingredients = dbRecipe.Ingredients.Select(Create).ToList()
             };
         }
 
-        public static FoodDto Parse(Food food)
+        public static DbFood Parse(Food dbFood)
         {
-            return new FoodDto
+            return new DbFood
             {
-                Description = food.Description,
-                Carbonates = food.Carbonates,
-                Fats = food.Fats,
-                Proteins = food.Proteins,
-                Calories = food.Calories,
-                IsVegetarian = food.IsVegetarian
+                Description = dbFood.Description,
+                Carbonates = dbFood.Carbonates,
+                Fats = dbFood.Fats,
+                Proteins = dbFood.Proteins,
+                Calories = dbFood.Calories,
+                IsVegetarian = dbFood.IsVegetarian
             };
         }
     }

@@ -13,8 +13,8 @@ namespace CookBookAPI.Data
         {
         }
 
-        public DbSet<FoodDto> Foods { get; set; }
+        public DbSet<DbFood> Foods { get; set; }
 
-        public DbSet<RecipeDto> Recipes { get; set; }
+        public DbSet<DbRecipe> Recipes { get; set; }
     }
 }

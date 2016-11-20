@@ -1,10 +1,10 @@
 ﻿namespace CookBookAPI.Data
 {
-    public class IngredientDto
+    public class DbIngredient
     {
         public int Id { get; set; }
          
-        public FoodDto Food;
+        public DbFood Food;
 
         public double Amount;
     }

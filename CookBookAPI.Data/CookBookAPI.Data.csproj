@@ -52,11 +52,11 @@
     <Compile Include="CookBookDb.cs" />
     <Compile Include="CookBookDbInitializer.cs" />
     <Compile Include="DomainEntityFactory.cs" />
-    <Compile Include="FoodDto.cs" />
-    <Compile Include="IngredientDto.cs" />
+    <Compile Include="DbFood.cs" />
+    <Compile Include="DbIngredient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FoodRepository.cs" />
-    <Compile Include="RecipeDto.cs" />
+    <Compile Include="DbRecipe.cs" />
     <Compile Include="RecipeRepository.cs" />
   </ItemGroup>
   <ItemGroup>

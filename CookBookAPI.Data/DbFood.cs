@@ -1,6 +1,6 @@
 ﻿namespace CookBookAPI.Data
 {
-    public class FoodDto
+    public class DbFood
     {
         public int Id { get; set; }
 

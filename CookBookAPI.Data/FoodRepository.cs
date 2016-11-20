@@ -20,32 +20,32 @@ namespace CookBookAPI.Data
 
         public async Task<IEnumerable<Food>> GetAllAsync()
         {
-            var foodDtos = await _dbContext.Foods.ToListAsync();
-            return foodDtos.Select(DomainEntityFactory.Create);
+            var dbFoods = await _dbContext.Foods.ToListAsync();
+            return dbFoods.Select(DomainEntityFactory.Create);
         }
 
         public async Task<Food> FindByIdAsync(int foodId)
         {
-            var foodDto = await _dbContext.Foods.FindAsync(foodId);
-            return foodDto != null ? DomainEntityFactory.Create(foodDto) : null;
+            var dbFood = await _dbContext.Foods.FindAsync(foodId);
+            return dbFood != null ? DomainEntityFactory.Create(dbFood) : null;
         }
 
         public async Task<Food> FindByDescriptionAsync(string description)
         {
-            var foodDto = await _dbContext.Foods.SingleOrDefaultAsync(food => food.Description == description);
-            return foodDto != null ? DomainEntityFactory.Create(foodDto) : null;
+            var dbFood = await _dbContext.Foods.SingleOrDefaultAsync(food => food.Description == description);
+            return dbFood != null ? DomainEntityFactory.Create(dbFood) : null;
         }
 
         public void Create(Food food)
         {
-            var foodDto = DomainEntityFactory.Parse(food);
-            _dbContext.Foods.Add(foodDto);
+            var dbFood = DomainEntityFactory.Parse(food);
+            _dbContext.Foods.Add(dbFood);
         }
 
         public async Task DeleteAsync(int foodId)
         {
-            var foodDto = await _dbContext.Foods.FindAsync(foodId);
-            _dbContext.Foods.Remove(foodDto);
+            var dbFood = await _dbContext.Foods.FindAsync(foodId);
+            _dbContext.Foods.Remove(dbFood);
         }
 
         public async Task SaveChangedAsync()
