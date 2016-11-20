@@ -154,5 +154,80 @@ namespace CookBookAPI.Tests.Controllers
 
             Assert.AreSame(locationUrl, typedResult.Location.AbsoluteUri);
         }
+
+        [Test]
+        public async Task Delete_FoodDoesntExist_ShouldReturnNotFound()
+        {
+            Fixture fixture = new Fixture();
+
+            var foodRepositoryStub = new Mock<IFoodRepository>(MockBehavior.Strict);
+            foodRepositoryStub.Setup(obj => obj.FindByIdAsync(It.IsAny<int>())).ReturnsAsync((Food)null);
+
+            FoodsController controller = new FoodsController(foodRepositoryStub.Object);
+
+            var typedResult = await controller.DeleteAsync(fixture.Create<int>()) as NotFoundResult;
+
+            Assert.IsNotNull(typedResult);
+        }
+
+        [Test]
+        public async Task Delete_DeletionFails_ShouldReturnBadRequest()
+        {
+            Fixture fixture = new Fixture();
+
+            var foodId = fixture.Create<int>();
+            var food = fixture.Build<Food>().With(f => f.Id, foodId).Create();
+
+            var foodRepositoryStub = new Mock<IFoodRepository>(MockBehavior.Strict);
+            foodRepositoryStub.Setup(obj => obj.FindByIdAsync(foodId)).ReturnsAsync(food);
+            foodRepositoryStub.Setup(obj => obj.DeleteAsync(foodId)).Returns(Task.CompletedTask);
+            foodRepositoryStub.Setup(obj => obj.SaveChangedAsync()).Throws<RepositoryException>();
+
+            FoodsController controller = new FoodsController(foodRepositoryStub.Object);
+
+            var typedResult = await controller.DeleteAsync(foodId) as BadRequestResult;
+
+            Assert.IsNotNull(typedResult);
+        }
+
+        [Test]
+        public async Task Delete_FoodExistsAndDeletionSucceeds_ShouldDeleteFood()
+        {
+            Fixture fixture = new Fixture();
+
+            var foodId = fixture.Create<int>();
+            var food = fixture.Build<Food>().With(f => f.Id, foodId).Create();
+
+            var foodRepositoryMock = new Mock<IFoodRepository>(MockBehavior.Strict);
+            foodRepositoryMock.Setup(obj => obj.FindByIdAsync(foodId)).ReturnsAsync(food);
+            foodRepositoryMock.Setup(obj => obj.DeleteAsync(foodId)).Returns(Task.CompletedTask);
+            foodRepositoryMock.Setup(obj => obj.SaveChangedAsync()).Returns(Task.CompletedTask);
+
+            FoodsController controller = new FoodsController(foodRepositoryMock.Object);
+
+            await controller.DeleteAsync(foodId);
+
+            foodRepositoryMock.Verify(obj => obj.DeleteAsync(foodId));
+        }
+
+        [Test]
+        public async Task Delete_FoodExistsAndDeletionSucceeds_ShouldReturnOk()
+        {
+            Fixture fixture = new Fixture();
+
+            var foodId = fixture.Create<int>();
+            var food = fixture.Build<Food>().With(f => f.Id, foodId).Create();
+
+            var foodRepositoryStub = new Mock<IFoodRepository>(MockBehavior.Strict);
+            foodRepositoryStub.Setup(obj => obj.FindByIdAsync(foodId)).ReturnsAsync(food);
+            foodRepositoryStub.Setup(obj => obj.DeleteAsync(foodId)).Returns(Task.CompletedTask);
+            foodRepositoryStub.Setup(obj => obj.SaveChangedAsync()).Returns(Task.CompletedTask);
+
+            FoodsController controller = new FoodsController(foodRepositoryStub.Object);
+
+            var typedResult = await controller.DeleteAsync(foodId) as OkResult;
+
+            Assert.IsNotNull(typedResult);
+        }
     }
 }

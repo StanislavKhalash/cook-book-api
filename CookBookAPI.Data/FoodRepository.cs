@@ -42,9 +42,10 @@ namespace CookBookAPI.Data
             _dbContext.Foods.Add(foodDto);
         }
 
-        public void Delete(Food food)
+        public async Task DeleteAsync(int foodId)
         {
-            throw new NotImplementedException();
+            var foodDto = await _dbContext.Foods.FindAsync(foodId);
+            _dbContext.Foods.Remove(foodDto);
         }
 
         public async Task SaveChangedAsync()
@@ -55,7 +56,7 @@ namespace CookBookAPI.Data
             }
             catch (DbUpdateException ex)
             {
-                throw new RepositoryException("Failed to create an entity", ex);
+                throw new RepositoryException("Failed to save changes to the database", ex);
             }
         }
     }

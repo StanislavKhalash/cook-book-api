@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CookBookAPI.Domain
@@ -14,7 +13,7 @@ namespace CookBookAPI.Domain
 
         void Create(Food food);
 
-        void Delete(Food food);
+        Task DeleteAsync(int foodId);
 
         Task SaveChangedAsync();
     }
