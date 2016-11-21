@@ -6,7 +6,6 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using System.Web.Http.ModelBinding;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -16,6 +15,7 @@ using Microsoft.Owin.Security.OAuth;
 using CookBookAPI.Models;
 using CookBookAPI.Providers;
 using CookBookAPI.Results;
+using CookBookAPI.Domain;
 
 namespace CookBookAPI.Controllers
 {
@@ -78,7 +78,7 @@ namespace CookBookAPI.Controllers
         [Route("ManageInfo")]
         public async Task<ManageInfoViewModel> GetManageInfo(string returnUrl, bool generateState = false)
         {
-            IdentityUser user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            ApplicationUser user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
 
             if (user == null)
             {
@@ -87,14 +87,14 @@ namespace CookBookAPI.Controllers
 
             List<UserLoginInfoViewModel> logins = new List<UserLoginInfoViewModel>();
 
-            foreach (IdentityUserLogin linkedAccount in user.Logins)
-            {
-                logins.Add(new UserLoginInfoViewModel
-                {
-                    LoginProvider = linkedAccount.LoginProvider,
-                    ProviderKey = linkedAccount.ProviderKey
-                });
-            }
+            //foreach (IdentityUserLogin linkedAccount in user.Logins)
+            //{
+            //    logins.Add(new UserLoginInfoViewModel
+            //    {
+            //        LoginProvider = linkedAccount.LoginProvider,
+            //        ProviderKey = linkedAccount.ProviderKey
+            //    });
+            //}
 
             if (user.PasswordHash != null)
             {
@@ -328,7 +328,7 @@ namespace CookBookAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
 
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
@@ -357,7 +357,7 @@ namespace CookBookAPI.Controllers
                 return InternalServerError();
             }
 
-            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
 
             IdentityResult result = await UserManager.CreateAsync(user);
             if (!result.Succeeded)
@@ -371,17 +371,6 @@ namespace CookBookAPI.Controllers
                 return GetErrorResult(result); 
             }
             return Ok();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && _userManager != null)
-            {
-                _userManager.Dispose();
-                _userManager = null;
-            }
-
-            base.Dispose(disposing);
         }
 
         #region Helpers

@@ -1,15 +1,16 @@
 ﻿using System.Data.Entity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace CookBookAPI.Data
 {
-    public class CookBookDb : DbContext
+    public class CookBookDb : IdentityDbContext<DbApplicationUser>
     {
         static CookBookDb()
         {
-            System.Data.Entity.Database.SetInitializer(new CookBookDbInitializer());
+            Database.SetInitializer(new CookBookDbInitializer());
         }
 
-        public CookBookDb() : base("name=DefaultConnection")
+        public CookBookDb() : base("name=DefaultConnection", throwIfV1Schema: false)
         {
         }
 
