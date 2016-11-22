@@ -1,26 +1,30 @@
-﻿using CookBookAPI.Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Http;
+using Microsoft.AspNet.Identity;
+
+using CookBookAPI.Domain;
 
 namespace CookBookAPI.Controllers
 {
     public class RecipesController : ApiController
     {
+        private readonly ApplicationUserManager _userManager;
         private readonly IRecipeRepository _recipeRepository;
-        private readonly IIdentityService _identityService;
 
         public RecipesController(
-            IIdentityService identityService,
+            ApplicationUserManager userManager,
             IRecipeRepository recipeRepository)
         {
-            _identityService = identityService;
+            _userManager = userManager;
             _recipeRepository = recipeRepository;
         }
 
-        public IEnumerable<Recipe> Get()
+        public async Task<IEnumerable<Recipe>> GetAsync()
         {
-            return _recipeRepository.GetAllRecipes(_identityService.GetCurrentUser()).ToList();
+            var user = await _userManager.FindByIdAsync(User.Identity.GetUserId());
+            return _recipeRepository.GetAllRecipes(user).ToList();
         }
     }
 }

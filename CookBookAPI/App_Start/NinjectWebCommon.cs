@@ -6,7 +6,7 @@ namespace CookBookAPI.App_Start
     using System;
     using System.Reflection;
     using System.Web;
-
+    using Microsoft.AspNet.Identity;
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
     using Ninject;
@@ -66,10 +66,14 @@ namespace CookBookAPI.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-            kernel.Bind<CookBookDb>().To<CookBookDb>();
-            kernel.Bind<IIdentityService>().To<IdentityService>();
+            kernel.Bind<CookBookDb>().ToSelf().InRequestScope();
+
+            kernel.Bind<ApplicationUserManager>().ToSelf().InRequestScope();
+            kernel.Bind<IUserStore<ApplicationUser>>().To<UserStore>().InRequestScope();
+
             kernel.Bind<IFoodRepository>().To<FoodRepository>();
             kernel.Bind<IRecipeRepository>().To<RecipeRepository>();
+
         }        
     }
 }

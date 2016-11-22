@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 
 namespace CookBookAPI.Domain
 {
     public class ApplicationUserManager : UserManager<ApplicationUser>
     {
-        public ApplicationUserManager(IdentityFactoryOptions<ApplicationUserManager> options, IUserStore<ApplicationUser> store)
+        public ApplicationUserManager(IUserStore<ApplicationUser> store)
             : base(store)
         {
             UserValidator = new UserValidator<ApplicationUser>(this)
@@ -14,7 +13,6 @@ namespace CookBookAPI.Domain
                 RequireUniqueEmail = true
             };
 
-            // Configure validation logic for passwords
             PasswordValidator = new PasswordValidator
             {
                 RequiredLength = 6,
@@ -23,12 +21,6 @@ namespace CookBookAPI.Domain
                 RequireLowercase = true,
                 RequireUppercase = true,
             };
-
-            var dataProtectionProvider = options.DataProtectionProvider;
-            if (dataProtectionProvider != null)
-            {
-                UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(dataProtectionProvider.Create("ASP.NET Identity"));
-            }
         }
     }
 }

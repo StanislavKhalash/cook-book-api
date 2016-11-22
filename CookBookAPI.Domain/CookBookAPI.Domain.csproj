@@ -76,9 +76,7 @@
     <Compile Include="ApplicationUser.cs" />
     <Compile Include="ApplicationUserManager.cs" />
     <Compile Include="Food.cs" />
-    <Compile Include="IdentityService.cs" />
     <Compile Include="IFoodRepository.cs" />
-    <Compile Include="IIdentityService.cs" />
     <Compile Include="Ingredient.cs" />
     <Compile Include="IRecipeRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

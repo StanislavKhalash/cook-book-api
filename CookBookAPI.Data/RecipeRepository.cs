@@ -1,6 +1,7 @@
-﻿using System.Linq;
-using System.Security.Principal;
+﻿using System.Collections.Generic;
+using System.Linq;
 
+using AutoMapper;
 using CookBookAPI.Domain;
 
 namespace CookBookAPI.Data
@@ -14,9 +15,9 @@ namespace CookBookAPI.Data
             _dbContext = dbContext;
         }
 
-        public IQueryable<Recipe> GetAllRecipes(IPrincipal user)
+        public IEnumerable<Recipe> GetAllRecipes(ApplicationUser user)
         {
-            return _dbContext.Recipes.Select(DomainEntityFactory.Create).AsQueryable();
+            return _dbContext.Recipes.Select(Mapper.Map<Recipe>);
         }
     }
 }
