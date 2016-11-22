@@ -11,7 +11,9 @@ namespace CookBookAPI
         {
             Mapper.Initialize(cfg =>
             {
-                cfg.CreateMap<DbApplicationUser, ApplicationUser>().ReverseMap();
+                cfg.CreateMap<DbApplicationUser, ApplicationUser>();
+                cfg.CreateMap<ApplicationUser, DbApplicationUser>();
+
                 cfg.CreateMap<DbFood, Food>().ReverseMap();
                 cfg.CreateMap<DbRecipe, Recipe>().ReverseMap();
             });

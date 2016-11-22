@@ -70,7 +70,7 @@
     <Compile Include="FoodRepository.cs" />
     <Compile Include="DbRecipe.cs" />
     <Compile Include="RecipeRepository.cs" />
-    <Compile Include="UserStore.cs" />
+    <Compile Include="ApplicationUserStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -69,7 +69,7 @@ namespace CookBookAPI.App_Start
             kernel.Bind<CookBookDb>().ToSelf().InRequestScope();
 
             kernel.Bind<ApplicationUserManager>().ToSelf().InRequestScope();
-            kernel.Bind<IUserStore<ApplicationUser>>().To<UserStore>().InRequestScope();
+            kernel.Bind<IUserStore<ApplicationUser>>().To<ApplicationUserStore>().InRequestScope();
 
             kernel.Bind<IFoodRepository>().To<FoodRepository>();
             kernel.Bind<IRecipeRepository>().To<RecipeRepository>();

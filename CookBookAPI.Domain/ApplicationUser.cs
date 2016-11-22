@@ -7,13 +7,18 @@ namespace CookBookAPI.Domain
 {
     public class ApplicationUser : IUser, IUser<string>
     {
+        public ApplicationUser()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+
         public string Id { get; set; }
 
         public string UserName { get; set; }
 
         public string Email { get; set; }
 
-        public object PasswordHash { get; set; }
+        public string PasswordHash { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)
         {
